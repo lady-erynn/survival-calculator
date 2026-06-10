@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Survival calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&display=swap"
+        rel="stylesheet">
+            <link rel="stylesheet" href="style.css">    
+    </head>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+        html,
+        body{
+            min-height:100%;
+            background:#080808;
+        }
+        body{
+            display:flex;
+            justify-content : center;
+            align-items:flex-start;
+            padding: 40px 16px 60px;
+            font-family:'Silkscreen', monospace;
+        }
+
+        .calculator{
+            background:#0d0d0d;
+            border:3px solid #333;
+            width: 100%;
+            max-width: 420px;
+            image-rendering: pixelated;
+        }
+
+        .topbar{
+            border-bottom:2px solid #222;
+            padding: 10px 14px;
+        }
+
+        .topbar-title{
+            font-family:'VT323', monospace;
+            font-size: 24px;
+            color: #ccc;
+            letter-spacing: 2px;
+        }
+
+        .blink{
+            animation: blink 1s step-end infinite;
+            color: white;
+        }
+        @keyframes blink{
+            0%, 100%{
+                opacity: 1;
+            }
+            50%{
+                opacity: 0;
+            }
+        }
+        
+/* question screen part */
+        .screen{
+            background: #0a0a0a;
+            border: 2px solid #1e1e1e;
+            margin: 12px;
+            padding: 12px;
+            min-height: 160px;
+        }
+
+        .step-label{
+            font-size: 9px;
+            color: #444;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .question-text{
+            font-size:9px;
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .question-sub{
+            font-size: 10px;
+            color: #555;
+            margin-top: 8px;
+            margin-bottom:12px;
+        }
+
+        .number-display{
+            font-family:'Courier New', Courier, monospace;
+            font-size: 55px;
+            color: white;
+            text-align: right;
+            line-height: 1;
+
+        }
+
+        .dim{
+            color: #2a2a2a;
+        }
+
+        .progress-dots{
+            display:flex;
+            gap:5px;
+            margin-top: 12px;
+        }
+
+        .dot{
+            width: 8px;height: 8px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+        }
+
+        .dot.active{
+            background: white;
+        }
+
+        .dot.current{
+            background: white;
+            animation: blink 0.8s step-end infinite;
+
+        }
+
+        /* keypad part was forgotten bruh */
+
+        .keypad{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 1px;
+            background: #111;
+            border: 2px solid #1a1a1a;
+        }
+
+        .key{
+            background: #111;
+            border: none;
+            color: #bbb;
+            font-family: 'Silkscreen', monospace;
+            font-size: 18px;
+            height: 62px;
+            cursor: pointer;
+            transition: .1s;
+        }
+
+        .key:hover{
+            background: #181818;
+            color: white;
+        }
+
+        .key:active{
+            background: #222;
+        }
+
+        .delete-key{
+            font-size: 12px;
+            color: #666;
+        }
+
+        .next-key{
+            grid-column: span 2;
+            font-size:10px;
+            letter-spacing: 1px;
+        }
+
+        .calculate-key{
+            grid-column: span 3;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: white;
+            height: 52px;
+            border-top: 1px solid #2a2a2a;
+
+        }
+
+        .reset-key{
+            grid-column: span 3;
+            height: 38px;
+            font-size: 9px;
+            color: #444;
+            letter-spacing: 2px;
+            background: #0a0a0a;
+        }
+
+
+        /* result part. tmrw check code again i def forgot smth */
+
+        .result{
+            background: #0d0d0d;
+            border: 3px solid #333;
+            width: 100%;
+            max-width: 420px;
+            padding: 12px;
+        }
+
+        .council-message{
+            text-align: center;
+            font-size: 10px;
+            color: #444;
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+
+        .small-grey-text{
+            color: #333;
+        }
+
+        .scene-image-container{
+            width: 100%;
+            height: 100px;
+            background: #050505;
+            border: 2px solid #1e1e1e;
+            overflow: hidden;
+        }
+
+        .scene-image-container img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+
+        }
+
+        .survival-label{
+            text-align: center;
+            font-size: 9px;
+            color: #444;
+            letter-spacing:2px;
+
+        }
+
+        .survival-number{
+            font-family: 'VT323', monospace;
+            font-size: 67px; /* totally not intentional */
+            color: white;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .stats-grid{
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* fr fr */
+            gap: 1px;
+            background: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .stat-card{
+            background: #0a0a0a;
+            padding: 10px;
+        }
+
+        .wide-card{
+            grid-column: span 2;
+        }
+
+        .stat-label{
+            font-size: 8px;
+            color: #444;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value{
+            font-family: 'VT323', monospace;
+            font-size: 30px;
+            color: white;
+        }
+
+        .rank-box{
+            margin-top: 10px;
+            margin-bottom: 12px;
+        }
+
+        .rank-label{
+            font-size: 9px;
+            color: #444;
+            letter-spacing: 2px;
+        }
+
+        .rank-value{
+            font-size: 14px;
+            margin-top: 6px;
+            color: #88ffcc
+        }
+
+        .recommendation-text{ 
+            font-family: 'VT323',monospace;
+            font-size: 18px;
+            color: #666;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        /* looking like an angel on the walls of versailles <3 */
+
+    </style>
+
+    <body>
+
+        <div class="calculator" id="calculator">
+
+            <div class="topbar">
+                <div class="topbar-title">
+                    SURV<span class="blink">_</span>CALC
+                </div>
+            </div>
+
+        <div class="screen" id="questionScreen">
+
+            <div class="step-label" id="stepLabel">
+            STEP 1 / 5
+            </div>
+
+        <div class="question-text" id="questionText">
+            how many assignments do you have??
+        </div>
+
+    <div class="question-sub" id="questionSubtitle">
+        total this semester
+    </div>
+
+    <div class="number-display dim" id="numberDisplay">
+        0
+    </div>
+
+    <div class="progress-dots" id="progressDots">
+
+    </div>
+
+        </div>
+
+        <div id="megothumorheh"></div>
+    
+
+
+    <div class="keypad" id="keypad">
+        <button class="key" onclick="pressNumber('1')">1</button>
+        <button class="key" onclick="pressNumber('2')">2</button>
+        <button class="key" onclick="pressNumber('3')">3</button>
+        <button class="key" onclick="pressNumber('4')">4</button>
+        <button class="key" onclick="pressNumber('5')">5</button>
+        <button class="key" onclick="pressNumber('6')">6</button>
+        <button class="key" onclick="pressNumber('7')">7</button>
+        <button class="key" onclick="pressNumber('8')">8</button>
+        <button class="key" onclick="pressNumber('9')">9</button>
+
+        <button class="key delete-key" onclick="pressNumber('0')">
+            0
+        </button>
+
+        <button class="key delete-key" onclick="deleteDigit()">← del</button>
+        <button class="key next-key"
+            id="nextButton"
+            onclick="goToNextQuest()">
+        next →
+        </button>
+
+        <button class="key calculate-key"
+            id="calculateButton"
+            style="display:none"
+            onclick="calculateFate()">
+
+        = calculate
+        </button>
+
+        <button class="key reset-key"
+        onclick="resetCalculator()">
+        [ reset ]
+    </button>
+    </div>
+    </div>
+
+<div class="result"
+     id="result"
+     style="display:none">
+
+    <div class="council-message">
+        the council has reviewed your situation
+
+        <br>
+        ................
+        <br>
+
+        <span class="small-grey-text">
+            four cats have been consulted.
+            their verdict is final.
+        </span>
+    </div>
+<div class="scene-image-container">
+
+    <img
+        id="verdictImage"
+        src="images/pic.png"
+        alt="semester img">
+
+</div>
+
+<div class="stats-grid">
+
+    <div class="survival-section">
+
+    <div class="survival-label">
+        SURVIVAL RATE
+    </div>
+
+    <div class="survival-number"
+         id="survivalNumber">
+    </div>
+
+</div>
+
+    <div class="stat-card">
+        <div class="stat-label">
+            ACADEMIC AURA
+        </div>
+
+        <div class="stat-value" id="auraValue"></div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">
+            COFFEE DEPENDENCY
+        </div>
+
+
+        <div class="stat-value" id="coffeeValue"></div>
+    </div>
+
+    <div class="stat-card wide-card">
+        <div class="stat-label">
+            LOCK-IN PROBABLITY
+        </div>
+
+        <div class="stat-value" id="lockInValue"></div>
+    </div>
+
+</div>
+
+<div class="rank-box">
+
+    <div class="rank-label">
+        ARC RANK
+    </div>
+
+    <div class="rank-value"
+         id="rankValue">
+    </div>
+
+</div>
+
+<div class="recommendation-text"
+     id="recommendationText">
+</div>
+</div>
+
+<script>
+    const questions = [
+        {
+            key: "assignments",
+            label: "assignments",
+            color: "white",
+            subtext: "totally this semester"
+        },
+        {
+            key: "exams",
+            label: "exams",
+            color: "#ff8888",
+            subtext: "including finals"
+        },
+        {
+            key: "projects",
+            label: "projects",
+            color: "#ffcc44",
+            subtext: "group and solo"
+        },
+        {
+            key: "sleep",
+            label: "sleep hours",
+            color: "#88ffcc",
+            subtext: "per night on average"
+        },
+        {
+            key: "fail",
+            label: "failure time",
+            color: "#cc88ff",
+            subtext: "hrs/week you spend on doomscrolling ;-;"
+        }
+
+
+    ];
+
+    let currentStep = 0;
+    let answers = {};
+    let currentInput = "";
+
+function updateScreen (){
+    const q = questions[currentStep];
+
+    document.getElementById("stepLabel").textContent = "STEP " + (currentStep + 1) + " / " + questions.length;
+
+    document.getElementById("questionText").innerHTML = 'how many <span style="color:' + q.color + '">' + q.label + '</span> do you have?';
+
+    document.getElementById("questionSubtitle").textContent = q.subtext;
+
+
+
+    const display = document.getElementById("numberDisplay");
+    display.textContent = "";
+
+
+    currentInput = "";
+
+
+
+    // ex.4.1 11 13, 2.5 - .9, unit ex, graph
+
+    const isLastStep = currentStep === questions.length - 1;
+    document.getElementById("nextButton").style.display = isLastStep ? "none" : "block";
+    document.getElementById("calculateButton").style.display = isLastStep ? "block" : "none";
+
+
+}
+    updateScreen();
+    updateDots();
+
+function pressNumber(digit) {
+    if (currentInput.length >= 3) return; //to the deaf void where you belong
+    currentInput = currentInput === "" ? digit : currentInput + digit;
+    const display = document.getElementById("numberDisplay");
+    display.textContent = currentInput;
+    display.classList.remove("dim");
+
+
+}
+
+function deleteDigit(){
+    currentInput = currentInput.slice(0,-1);
+    const display = document.getElementById("numberDisplay");
+
+
+    if (currentInput === "") {
+        display.textContent = "0";
+        display.classList.add("dim");
+    }
+    else{
+        display.textContent = currentInput;
+
+    }
+    }
+
+function goToNextQuest() {
+    answers[questions[currentStep].key] = parseInt(currentInput || "0");
+       console.log(answers);
+    currentStep++;
+
+    if(currentStep<questions.length){
+    updateScreen();
+    updateDots();
+    }
+    
+}
+
+function resetCalculator() {
+    currentStep = 0;
+    answers = {};
+    currentInput = "";
+    updateScreen();
+    updateDots();
+
+    document.getElementById("calculator").style.display = "block";
+    document.getElementById("result").style.display = "none";
+}
+
+function updateDots(){
+    let html = "";
+    for(let i=0; i < questions.length; i++){
+        
+        if(i < currentStep) {
+        html+= '<div class="dot active"></div>';
+        }
+    else if(i=== currentStep) {
+        html += '<div class="dot current"></div>';
+    }
+    else {
+        html += '<div class="dot"></div>';
+    }
+    }
+document.getElementById("progressDots").innerHTML = html;
+    
+
+}
+
+function calculateFate(){
+
+    answers[questions[currentStep].key] =
+    parseInt(currentInput || "0");
+
+
+    console.log(answers);
+
+    const assignments = answers.assignments;
+    const exams = answers.exams;
+    const projects = answers.projects;
+    const sleep = answers.sleep;
+    const doomscrolling = answers.fail;
+
+    let survivalRate =
+        100
+        - assignments * 2
+        - exams * 7
+        - projects * 5
+        + sleep * 4
+        - doomscrolling * 3;
+
+    survivalRate += Math.floor(Math.random() * 20) - 10;
+
+    survivalRate = Math.max(1, Math.min(99, survivalRate));
+
+
+
+    const auraValue =
+        Math.max(
+            1,
+            Math.min(
+                99,
+                50 + sleep * 5 - exams * 2
+            )
+        );
+
+
+
+    const coffeeValue =
+        Math.max(
+            1,
+            Math.min(
+                99,
+                assignments + projects * 4 + 30
+            )
+        );
+
+
+
+    const lockInValue =
+        Math.max(
+            1,
+            Math.min(
+                99,
+                survivalRate + Math.floor(Math.random() * 20) - 10
+            )
+        );
+
+
+
+    let rank;
+    let message;
+
+
+
+    if (survivalRate >= 80){
+
+        rank = "MAIN CHARACTER";
+        message = "this should not be statistically possible";
+
+    }
+
+    else if (survivalRate >= 60){
+
+        rank = "HERO ARC";
+        message = "you will probably live";
+
+    }
+
+    else if (survivalRate >= 40){
+
+        rank = "SIDE CHARACTER";
+        message = "interesting choices were made";
+
+    }
+
+    else{
+
+        rank = "FINAL BOSS";
+        message = "the council wishes you luch";
+
+    }
+
+
+
+    document.getElementById("survivalNumber").textContent =
+        survivalRate + "%";
+
+    document.getElementById("auraValue").textContent =
+        auraValue + "%";
+
+    document.getElementById("coffeeValue").textContent =
+        coffeeValue + "%";
+
+    document.getElementById("lockInValue").textContent =
+        lockInValue + "%";
+
+    document.getElementById("rankValue").textContent =
+        rank;
+
+    document.getElementById("recommendationText").textContent =
+        message;
+
+    document.getElementById("calculator").style.display = "none";
+document.getElementById("result").style.display = "block";
+
+
+document.getElementById("result").style.display = "block";
+
+}
+// this is a comment
+</script>
+
+</body>
+
+</html>
