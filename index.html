@@ -371,6 +371,21 @@
     </div>
     </div>
 
+<div id="loadingScreen"
+    style="display:none"
+    class="result">
+
+    <div class="council-message">
+        consulting the cats...
+        <br><br>
+        feeding your life choices to the void...
+        <br><br>
+        awakened the monster to perform ancient calculations...
+    <br><br>
+    </div>
+
+</div>
+
 <div class="result"
      id="result"
      style="display:none">
@@ -455,6 +470,20 @@
 </div>
 
 <script>
+
+    const cats = [
+        "ash",
+        "gary",
+        "spotty",
+        "trixy",
+        "katsuki",
+        "the void"
+    ];
+
+    const cat = 
+    cats[Math.floor(Math.random()*cats.length)]
+
+
     const questions = [
         {
             key: "assignments",
@@ -565,10 +594,12 @@ function resetCalculator() {
     currentStep = 0;
     answers = {};
     currentInput = "";
+
     updateScreen();
     updateDots();
 
     document.getElementById("calculator").style.display = "block";
+    document.getElementById("loadingScreen").style.display = "none";
     document.getElementById("result").style.display = "none";
 }
 
@@ -667,24 +698,62 @@ function calculateFate(){
     else if (survivalRate >= 60){
 
         rank = "HERO ARC";
-        message = "you will probably live";
+
+        const heroMessage = [
+            "you will probably survive",
+            "the council approves",
+            "surprisingly stable, what's your secret??"
+        ]
+
+        message = heroMessage[
+            Math.floor(Math.random () * heroMessage.length)
+        ];
 
     }
 
     else if (survivalRate >= 40){
 
         rank = "SIDE CHARACTER";
-        message = "interesting choices were made";
+
+        const sideMessage = [
+            "interesting choices were made, the consequences are pending",
+            "you are alive, which exceeds our expectations",
+            "the council is mildly concerned",
+            "not worthy of note, but still noted"
+        ]
+        message =
+            sideMessage[
+                Math.floor(Math.random() * sideMessage.length)
+            ];
 
     }
 
     else{
 
         rank = "FINAL BOSS";
-        message = "the council wishes you luch";
+        
+        const finalMessage = [
+        "the council is wishes luck. you definitely need it.",
+        "even caffeine fears what lies ahead",
+        "lock in chance: found dead in a ditch",
+        "the cats will pray for you"
+    ]
+        
+        message =
+            finalMessage[
+            Math.floor(Math.random() * finalMessage.length)
+
+        ];
+
+    if(Math.random() < 0.05){
+        rank = "THE MATRIX GLITCHED";
+        message = "the cats ain't cating";
+    }
+
 
     }
 
+    message+="\n\n. signed,\n" + cat;
 
 
     document.getElementById("survivalNumber").textContent =
@@ -705,14 +774,20 @@ function calculateFate(){
     document.getElementById("recommendationText").textContent =
         message;
 
-    document.getElementById("calculator").style.display = "none";
-document.getElementById("result").style.display = "block";
+document.getElementById("calculator").style.display = "none";
+document.getElementById("loadingScreen").style.display = "block";
 
+setTimeout(function () {
+
+    document.getElementById("loadingScreen").style.display = "none";
+    document.getElementById("result").style.display = "block";
+
+}, 2500);
 
 document.getElementById("result").style.display = "block";
 
 }
-// this is a comment
+
 </script>
 
 </body>
