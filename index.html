@@ -30,7 +30,8 @@
             background:#0d0d0d;
             border:3px solid #333;
             width: 100%;
-            max-width: 420px;
+            height: 50%;
+            max-width: 500px;
             image-rendering: pixelated;
         }
 
@@ -65,24 +66,32 @@
             border: 2px solid #1e1e1e;
             margin: 12px;
             padding: 12px;
-            min-height: 160px;
+            min-height: 250px;
         }
 
         .step-label{
-            font-size: 9px;
+            font-size: 18px;
             color: #444;
             letter-spacing: 2px;
             margin-bottom: 8px;
         }
 
         .question-text{
-            font-size:9px;
+            font-size:18px;
             color: #ddd;
             line-height: 1.6;
         }
 
+        .liveMessage{
+    margin-top:10px;
+    font-size:15px;
+    color:#666;
+    line-height:1.5;
+    min-height:20px;
+}
+
         .question-sub{
-            font-size: 10px;
+            font-size: 15px;
             color: #555;
             margin-top: 8px;
             margin-bottom:12px;
@@ -196,14 +205,26 @@
 
         .council-message{
             text-align: center;
-            font-size: 10px;
-            color: #444;
+            font-size: 20px;
+            color: #ebe8e8;
             line-height: 1.8;
             margin-bottom: 14px;
         }
 
         .small-grey-text{
-            color: #333;
+            color: #b8b5b5;
+        }
+
+        #catFace {
+            font-family: 'VT323', monospace;
+            color: white;
+            font-size: 34px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            white-space: pre-line;
         }
 
         .scene-image-container{
@@ -223,7 +244,7 @@
 
         .survival-label{
             text-align: center;
-            font-size: 9px;
+            font-size: 15px;
             color: #444;
             letter-spacing:2px;
 
@@ -255,7 +276,7 @@
         }
 
         .stat-label{
-            font-size: 8px;
+            font-size: 14px;
             color: #444;
             letter-spacing: 2px;
             margin-bottom: 4px;
@@ -273,7 +294,7 @@
         }
 
         .rank-label{
-            font-size: 9px;
+            font-size: 15px;
             color: #444;
             letter-spacing: 2px;
         }
@@ -322,6 +343,11 @@
 
     <div class="number-display dim" id="numberDisplay">
         0
+    </div>
+
+    
+    <div class="liveMessage" id="liveMessage">
+        awaiting questionable decisions...
     </div>
 
     <div class="progress-dots" id="progressDots">
@@ -404,10 +430,10 @@
     </div>
 <div class="scene-image-container">
 
-    <img
-        id="verdictImage"
-        src="images/pic.png"
-        alt="semester img">
+      <div id="catFace">
+        (=^･ω･^=)
+      </div>
+        
 
 </div>
 
@@ -559,6 +585,25 @@ function pressNumber(digit) {
     const display = document.getElementById("numberDisplay");
     display.textContent = currentInput;
     display.classList.remove("dim");
+    const value = parseInt(currentInput || "0");
+
+
+    // also 14/6
+    let liveText = "awaiting questionable decisions..";
+        if (questions[currentStep].key === "sleep" && value < 5) {
+        liveText = "have you tried unconsciousness??";
+    }
+
+    else if (questions[currentStep].key === "assignments" && value > 10) {
+        liveText = "assignments are NOT pokemon cards";
+    }
+
+    else if (questions[currentStep].key === "fail" && value > 6) {
+        liveText = "the council recommends grass. touching it.";
+    }
+
+    document.getElementById("liveMessage").textContent = liveText;
+
 
 
 }
@@ -571,6 +616,7 @@ function deleteDigit(){
     if (currentInput === "") {
         display.textContent = "0";
         display.classList.add("dim");
+        
     }
     else{
         display.textContent = currentInput;
@@ -594,6 +640,10 @@ function resetCalculator() {
     currentStep = 0;
     answers = {};
     currentInput = "";
+
+    //14/6
+    document.getElementById("liveMessage").textContent =
+        "awaiting questionable decisions..";
 
     updateScreen();
     updateDots();
@@ -621,6 +671,27 @@ document.getElementById("progressDots").innerHTML = html;
     
 
 }
+
+const heroCats = [
+    "(=^･ω･^=)",
+    "(≧◡≦)",
+    "(=^-ω-^=)",
+    "(＾• ω •＾)"
+];
+
+const sideCats = [
+    "(=；ェ；=)",
+    "(._.)",
+    "(=^-_-^=)",
+    "(･ัω･ั)"
+];
+
+const bossCats = [
+    "(=ＴェＴ=)",
+    "(≖︿≖✿)",
+    "(=｀ω´=)",
+    "(ノಠ益ಠ)ノ"
+];
 
 function calculateFate(){
 
@@ -685,6 +756,7 @@ function calculateFate(){
 
     let rank;
     let message;
+    let catExpression;
 
 
 
@@ -692,6 +764,8 @@ function calculateFate(){
 
         rank = "MAIN CHARACTER";
         message = "this should not be statistically possible";
+        catExpression =
+        heroCats[Math.floor(Math.random()*heroCats.length)];
 
     }
 
@@ -709,6 +783,10 @@ function calculateFate(){
             Math.floor(Math.random () * heroMessage.length)
         ];
 
+        catExpression =
+        heroCats[Math.floor(Math.random()*heroCats.length)];
+
+
     }
 
     else if (survivalRate >= 40){
@@ -725,6 +803,10 @@ function calculateFate(){
             sideMessage[
                 Math.floor(Math.random() * sideMessage.length)
             ];
+
+        catExpression =
+        sideCats[Math.floor(Math.random()*sideCats.length)];
+
 
     }
 
@@ -745,6 +827,10 @@ function calculateFate(){
 
         ];
 
+        catExpression =
+        bossCats[Math.floor(Math.random()*bossCats.length)];
+
+
     if(Math.random() < 0.05){
         rank = "THE MATRIX GLITCHED";
         message = "the cats ain't cating";
@@ -754,7 +840,6 @@ function calculateFate(){
     }
 
     message+="\n\n. signed,\n" + cat;
-
 
     document.getElementById("survivalNumber").textContent =
         survivalRate + "%";
@@ -773,6 +858,10 @@ function calculateFate(){
 
     document.getElementById("recommendationText").textContent =
         message;
+    
+    console.log(catExpression);
+     document.getElementById("catFace").textContent =
+        catExpression;
 
 document.getElementById("calculator").style.display = "none";
 document.getElementById("loadingScreen").style.display = "block";
@@ -782,9 +871,7 @@ setTimeout(function () {
     document.getElementById("loadingScreen").style.display = "none";
     document.getElementById("result").style.display = "block";
 
-}, 2500);
-
-document.getElementById("result").style.display = "block";
+}, 5000);
 
 }
 
