@@ -22,6 +22,8 @@ How to run:
 I have decided to give you the liberty of absurdity and dishonesty, so check out some bloopers that are hidden in the calculator.
 When you enter ridiculous numbers for sleep, doomscrolling and assignments, you get some funny messages from the council.
 
+AI use: AI was only used for designing cat faces for the result screen, since it was difficult to source all emotions online. AI was not used anywhere else.
+
 hope you had some fun with it<3
 
 signing off,
